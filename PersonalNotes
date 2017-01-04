@@ -1,0 +1,89 @@
+puppetdb
+http://puppetboard.ny3.corp.portware.net/fact/custom_firmserver_payloads_installed_unstable_verbose
+http://prpuppetbdvm01.ny3.corp.portware.net/fact/custom_firmserver_payloads_installed_verbose
+http://prpuppetbdvm01.ny3.corp.portware.net/fact/custom_firmserver_payloads_missing_verbose
+http://puppetdbvm01.ny3.corp.portware.net:8080/v3/nodes/prfmseqenaivz01.nj1.portware.net/facts/custom_firmserver_payloads_installed_unstable_verbose
+
+			
+Feature	Specs for v18	Deployment System	Major	KKOI-AEXEH2		
+Feature	Puppet Sync with Helpdesk data	Helpdesk	Major	KKOI-AEXEKM
+Feature	Specs for v17	Deployment System	Major	KKOI-AEXEL7
+Feature	New Product - TradeHistory	Ticket Tracker	Major	KKOI-AEXEMB
+
+
+20161024
+--> Travels - call
+--> jogarao call
+--> tickets for dec
+-->
+
+
+20161101
+--> Deployment history - fix it at lotusscript end
+--> cash deposit
+--> Building blocks - status
+
+20161109
+--> deployment history - dll error
+--> diff tool update
+--> new tabs under deployment system and Helpdesk
+--> 
+
+20161114
+--> Ticket Tracker
+--> Deployment / Helpdesk
+--> FIX System
+--> Vacation manager
+--> Sales CRM
+--> 
+
++919892484513 - Quickr - 
+1560/- 
+
+roopa chowdhary
+
+
+envlist := @GetDocField(configDocID;"SystemTypeMapping");
+whichEnv := @Prompt([OKcancelList];"Choose Environment";"Select an environment to be filtered from view";"";envList);
+
+svr:= @LowerCase(@Name([CN];@ServerName));
+svr:= @If(svr ="hkmail" | svr="lotusindia"; "lotusindia";
+"mother");
+
+"http://"+svr+".portware.com/portwaredeployment.nsf/(srchQuery17)?openagent&key="+company+":"+@Right(portwareVersion;"_")+"~"+@RightBack(hotfixbundleid;"_") +"&env="+@Right(whichEnv;"~")
+
+
+
+
+cID:= @DbColumn ("":"NoCache";@ServerName: "helpdesk.nsf";"($ConfigDoc)";1);
+envlist := @GetDocField(cID;"SystemTypeMapping");
+whichEnv := @Prompt([OkCancelList];"Choose Environment";"Select an environment to be filtered from view";"";envList);
+v:= vlink;
+
+@If(@Contains(vlink;";");
+                  @Do(
+                           vlist := @Explode(vlink;";");
+                           v := @Prompt([OkCancelList];"Select";"Select a URL to be opened";"";vlist)
+                    );
+	  "");
+
+@URLOpen(v+"&env="+@Right(whichEnv;"~"))
+
+
+7893139998 - 744.50
+7331107604 - 747.50
+9989748136 - 358.80
+
+
+Lohith, Sainath, Anil, Killada
+
+mySQl - root/Portware@123
+
+
+http://prpuppetdbvm01.ny3.corp.portware.net:8080/v3;
+http://puppetdbvm01.ny3.corp.portware.net:8080/v3 
+
+
+"AWAN-AFJKYE"
+"KSOI-AGDFMT"
+"VSUY-AGSC32"

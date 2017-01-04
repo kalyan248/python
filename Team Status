@@ -1,0 +1,37 @@
+Team Status
+
+20161021
+--> damian's issue - fine
+--> Groups migration
+--> Helpdesk update with Puppet DB data
+--> Calendar sync between Notes and Outlook - they are sending it to both @pw and @fs ids
+--> vacation manager and team vacations
+--> backupexec
+--> appraisal - fill 2017 goals
+	email migration
+	Helpdesk - enhancement/automation
+	sales crm - migration
+
+--> find groups used in ACL and emails
+--> create factset group and test
+--> groups - deployment system
+--> tech support code - monitor mails - exchange data sync
+--> dbalerts -- fs email id
+
+
+FCT
+
+Parameter level validation checks
+1. xsi:type and type should always match. Manoj to get the definitions of each type
+
+2. Below attributes should not be under same parameter.
+	disableOnRplIfTimeExpired
+	mutableOnCxlRpl
+3. dummy_parameter should be always defined with tag “-888”
+4. xsi:type for constant parameters should be always string.: 
+5. All the parameters under parent element basicParameter should have an attribute parameterType="3". If this attribute with value “3” is present in the strategy element section then throw an error.
+6. Check for duplicate fixTag attribute (Duplicate underlying tags) within a strategy. Apply the same validation for basicParameter section.
+8. Check if any of the defined parameter (Exclude const parameters from this validation) is present in the strategy layout section or vice versa. Apply the same validation for basicParameter section.
+
+7. Check for duplicate lay:control attribute parameterRef within a strategy. Apply the same validation for basicParameter section. Exclude dummy_parameter.
+10.	Check whether val:edit attribute “field” within validation rules or flow State rule is present in strategy/ basicParameter or not (Value in the attribute field will be the parameter name). .. ignore field="EnableDummy"….
