@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strategies
+	xmlns="PortwareATDL-core-v2.5.0.xsd"
+	xmlns:val="PortwareATDL-valid-v2.5.0.xsd"
+	xmlns:lay="PortwareATDL-layout-v2.5.0.xsd"
+	xmlns:flow="PortwareATDL-flow-v2.5.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="PortwareATDL-core-v2.5.0.xsd PortwareATDL-core-v2.5.0.xsd"
+	strategyIdentifierTag="7111"
+	versionIdentifierTag="1.0.4_12-03-2015"
+	changeStrategyOnCxlRpl="true"
+	imageLocation="Okasan1.png">
+	
+	<!--
+	* Version Control
+	* v1.0.1_09-07-2015 ~ MITL-9ZH9D8 ~ Author: Vijitha Sanikommu : Initial Implementation of Okasan Algo Suite v1.7.
+	* v1.0.2_09-08-2015 ~ MITL-9ZH9D8 ~ Author: Vijitha Sanikommu : Changes made based on QA Script.
+	* v1.0.3_09-08-2015 ~ MITL-9ZH9D8 ~ Author: Vijitha Sanikommu : Changes made based on Round1 items#1,#2.	
+	* v1.0.4_12-03-2015 ~ MITL-A4R7VZ ~ Author: Praveena Chimalapati : Certification change request	#1
+  -->		
+  
+	<!-- BASIC PARAMETER -->
+	<basicParameter>
+
+		<parameter
+ 			name="Quantity"
+ 			uiRep="Order Quantity :"
+ 			xsi:type="Qty_t"
+ 			type="7"
+ 			use="optional"
+ 			enableSpinner="true"
+ 			supportDecimals="true"
+ 			parameterType="3"
+ 			fixTag="38">
+ 		</parameter>
+
+ 		<parameter
+ 			name="OrderType"
+ 			uiRep="Order Type :"
+ 			xsi:type="Int_t"
+ 			type="1"
+ 			use="optional"
+ 			parameterType="3"
+ 			fixTag="40">
+ 			<enumPair uiRep="Market" wireValue="1"/>
+ 			<enumPair uiRep="Limit" wireValue="2"/>
+ 		</parameter>
+
+		<parameter
+			name="dummy_parameter"
+			uiRep=""
+			xsi:type="UTCTimeStamp_t"
+			type="21"
+			use="optional"
+			initValue="16:00:00"
+			parameterType="3"
+			fixTag="-888">
+			<flow:stateRule visible="true">
+				<val:edit field="enable_dummy" value="1" operator="EQ"></val:edit>
+			</flow:stateRule>
+		</parameter>
+
+		<lay:strategyLayout>
+			<lay:strategyPanel orientation="VERTICAL">
+				<lay:strategyPanel orientation="HORIZONTAL">
+					<lay:control xsi:type="lay:DropDownList_t" label="OrderType" parameterRef="OrderType"/>
+				</lay:strategyPanel>
+				<lay:strategyPanel orientation="HORIZONTAL">
+					<lay:control xsi:type="lay:QuantityField_t" label="Quantity" parameterRef="Quantity"/>
+					<lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+					<lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+				</lay:strategyPanel>
+			</lay:strategyPanel>
+		</lay:strategyLayout>
+
+	</basicParameter>
+	
+	<!-- ASIA -->
+	<region
+		id="ASIA"
+		name="ASIA">	
+	
+	<!-- ICEBERG -->
+	<strategy
+		name="Iceberg"
+		uiRep="Iceberg"
+		wireValue="Iceberg"
+		version="1.7"
+		fixMsgType="D"
+		providerID="Okasan"
+		providerSubID="Portware">
+	
+		<parameter
+			name="TimeInForce"
+			uiRep=""
+			xsi:type="String_t"
+			type="14"
+			use="optional"
+			initValue="0"
+			const="true"
+			fixTag="59">
+		</parameter>
+		
+		<parameter
+			name="HandlInst"
+			uiRep=""
+			xsi:type="String_t"
+			type="14"
+			use="optional"
+			initValue="3"
+			const="true"
+			fixTag="21">
+		</parameter>		
+	
+		<parameter
+			name="StrategyService"
+			uiRep=""
+			xsi:type="String_t"
+			type="14"
+			use="optional"
+			initValue="BLUEBOX"
+			const="true"
+			fixTag="7110">
+		</parameter>
+	
+		<parameter
+			name="EnableStart"
+			uiRep="Start Time :"
+			xsi:type="Char_t"
+			type="12"
+			use="optional"
+			disableOnRplIfTimeExpired="7200"
+			ignoreProfile="true"
+			fixTag="-300">
+			<enumPair uiRep="Disabled" wireValue="0"></enumPair>
+			<enumPair uiRep="Set" wireValue="1"></enumPair>
+		</parameter>
+	
+		<parameter
+			name="StartTime"
+			uiRep=""
+			xsi:type="UTCTimeStamp_t"
+			type="21"
+			use="optional"
+			uiTimeFormat="HH:mm:ss"
+			ignoreProfile="true"
+			definedByFIX="false"
+			fixTag="7200">
+			<flow:stateRule enabled="true">
+				<val:edit field="EnableStart" operator="EQ" value="1"></val:edit>
+			</flow:stateRule>
+		</parameter>
+	
+		<parameter
+			name="EnableEnd"
+			uiRep="End Time :  "
+			xsi:type="Char_t"
+			type="12"
+			use="optional"
+			disableOnRplIfTimeExpired="7201"
+			ignoreProfile="true"
+			fixTag="-301">
+			<enumPair uiRep="Disabled" wireValue="0"></enumPair>
+			<enumPair uiRep="Set" wireValue="1"></enumPair>
+		</parameter>
+	
+		<parameter
+			name="ExpireTime"
+			uiRep=""
+			xsi:type="UTCTimeStamp_t"
+			type="21"
+			use="optional"
+			initValue="16:00:00"
+			initValueMode="1"
+			uiTimeFormat="HH:mm:ss"
+			ignoreProfile="true"
+			definedByFIX="false"
+			fixTag="7201">
+			<flow:stateRule enabled="true">
+				<val:edit field="EnableEnd" operator="EQ" value="1"></val:edit>
+			</flow:stateRule>
+		</parameter>
+	
+		<parameter
+			name="Percentageonmarket"
+			uiRep="% On Market :"
+			xsi:type="Float_t"
+			type="6"
+			use="optional"
+			initValue="10"
+			minValue="1"
+			maxValue="100"
+			increment=".1"
+			precision="1"
+			fixTag="7303">
+		</parameter>
+	
+		<parameter
+			name="dummy_parameter"
+			uiRep=""
+			xsi:type="String_t"
+			type="14"
+			use="optional"
+			fixTag="-888">
+			<flow:stateRule visible="true">
+				<val:edit field="EnableDummy" value="1" operator="EQ"></val:edit>
+			</flow:stateRule>
+		</parameter>
+	
+		<lay:strategyLayout>
+			<lay:strategyPanel orientation="HORIZONTAL">
+				<lay:strategyPanel title="Time Parameters" border="LoweredEtched" orientation="VERTICAL">
+					<lay:strategyPanel orientation="HORIZONTAL">
+						<lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableStart"/>
+						<lay:control xsi:type="lay:Clock_t" label="Start Time" parameterRef="StartTime"/>
+					</lay:strategyPanel>
+					<lay:strategyPanel orientation="HORIZONTAL">
+						<lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableEnd"/>
+						<lay:control xsi:type="lay:Clock_t" label="End Time" parameterRef="ExpireTime"/>
+					</lay:strategyPanel>
+				</lay:strategyPanel>
+				<lay:strategyPanel title="Strategy Parameters" border="LoweredEtched" orientation="VERTICAL" width="248">
+					<lay:control xsi:type="lay:DoubleSpinner_t" label="% on market" parameterRef="Percentageonmarket"/>
+					<lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+				</lay:strategyPanel>
+			</lay:strategyPanel>
+		</lay:strategyLayout>
+	
+		<val:strategyEdit errorMessage="End Time should be after Start Time">
+			<val:edit logicOperator="OR">
+				<val:edit field="ExpireTime" operator="GT" field2="StartTime"></val:edit>
+				<val:edit logicOperator="OR">
+					<val:edit field="ExpireTime" operator="NX"/>
+					<val:edit field="StartTime" operator="NX"/>
+				</val:edit>
+			</val:edit>
+		</val:strategyEdit>
+		
+		<val:strategyEdit errorMessage="Only Buy,Sell and Short Sell are allowed">
+			<val:edit logicOperator="OR">
+				<val:edit field="Side" operator="EQ" value="1"></val:edit>
+				<val:edit field="Side" operator="EQ" value="2"></val:edit>
+				<val:edit field="Side" operator="EQ" value="5"></val:edit>
+			</val:edit>
+		</val:strategyEdit>			
+	
+	</strategy>
+	
+	 <!-- JWAP -->
+   <strategy
+      name="JWAP"
+      uiRep="JWAP"
+      wireValue="JWAP"
+      version="1.7"
+      fixMsgType="D"
+      providerID="Okasan"
+      providerSubID="Portware">
+   
+      <parameter
+         name="TimeInForce"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="0"
+         const="true"
+         fixTag="59">
+      </parameter>
+            
+      <parameter
+         name="HandlInst"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="3"
+         const="true"
+         fixTag="21">
+      </parameter>
+   
+      <parameter
+         name="StrategyService"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="BLUEBOX"
+         const="true"
+         fixTag="7110">
+      </parameter>
+   
+      <parameter
+         name="EnableStart"
+         uiRep="Start Time :"
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7200"
+         ignoreProfile="true"
+         fixTag="-300">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="StartTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7200">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableStart" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="EnableEnd"
+         uiRep="End Time :  "
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7201"
+         ignoreProfile="true"
+         fixTag="-301">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="ExpireTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         initValue="16:00:00"
+         initValueMode="1"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7201">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableEnd" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="TimeInterval"
+         uiRep="Time Interval(secs) :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="90"
+         minValue="10"
+         maxValue="1800"
+         fixTag="7202">
+      </parameter>
+   
+      <parameter
+         name="MaxPercentageOfVolume"
+         uiRep="Max % Of Volume :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="100"
+         minValue="1"
+         maxValue="100"
+         fixTag="7208">
+      </parameter>
+   
+      <parameter
+         name="MarketVolPeriod"
+         uiRep="Market Vol Period :"
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="SINCE_ALGO_START"
+         fixTag="7224">
+         <enumPair uiRep="SINCE_ALGO_START" wireValue="SINCE_ALGO_START"></enumPair>
+         <enumPair uiRep="SINCE_MARKET_OPEN" wireValue="SINCE_MARKET_OPEN"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="dummy_parameter"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         fixTag="-888">
+         <flow:stateRule visible="true">
+            <val:edit field="EnableDummy" value="1" operator="EQ"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <lay:strategyLayout>
+         <lay:strategyPanel orientation="VERTICAL">
+            <lay:strategyPanel orientation="HORIZONTAL">
+               <lay:strategyPanel title="Time Parameters" border="LoweredEtched" orientation="VERTICAL">
+                  <lay:strategyPanel orientation="HORIZONTAL">
+                     <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableStart"/>
+                     <lay:control xsi:type="lay:Clock_t" label="Start Time" parameterRef="StartTime"/>
+                  </lay:strategyPanel>
+                  <lay:strategyPanel orientation="HORIZONTAL">
+                     <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableEnd"/>
+                     <lay:control xsi:type="lay:Clock_t" label="End Time" parameterRef="ExpireTime"/>
+                  </lay:strategyPanel>
+                  <lay:strategyPanel orientation="HORIZONTAL">
+                     <lay:control xsi:type="lay:SingleSpinner_t" label="TimeInterval" parameterRef="TimeInterval"/>
+                     <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+                  </lay:strategyPanel>
+               </lay:strategyPanel>
+               <lay:strategyPanel title="Strategy Parameters" border="LoweredEtched" orientation="VERTICAL" width="290">
+                  <lay:control xsi:type="lay:SingleSpinner_t" label="MaxPercentageOfVolume" parameterRef="MaxPercentageOfVolume"/>
+                  <lay:control xsi:type="lay:DropDownList_t" label="MarketVolPeriod" parameterRef="MarketVolPeriod"/>
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+               </lay:strategyPanel>
+            </lay:strategyPanel>
+         </lay:strategyPanel>
+      </lay:strategyLayout>
+   
+      <val:strategyEdit errorMessage="End Time should be after Start Time">
+         <val:edit logicOperator="OR">
+            <val:edit field="ExpireTime" operator="GT" field2="StartTime"></val:edit>
+            <val:edit logicOperator="OR">
+               <val:edit field="ExpireTime" operator="NX"/>
+               <val:edit field="StartTime" operator="NX"/>
+            </val:edit>
+         </val:edit>
+      </val:strategyEdit>
+      
+      <val:strategyEdit errorMessage="Only Buy,Sell and Short Sell are allowed">
+         <val:edit logicOperator="OR">
+            <val:edit field="Side" operator="EQ" value="1"></val:edit>
+            <val:edit field="Side" operator="EQ" value="2"></val:edit>
+            <val:edit field="Side" operator="EQ" value="5"></val:edit>
+         </val:edit>
+      </val:strategyEdit>  
+   
+   </strategy>
+   
+   <!-- TWAP -->
+   <strategy
+      name="TWAP"
+      uiRep="TWAP"
+      wireValue="TWAP"
+      version="1.7"
+      fixMsgType="D"
+      providerID="Okasan"
+      providerSubID="Portware">
+   
+      <parameter
+         name="TimeInForce"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="0"
+         const="true"
+         fixTag="59">
+      </parameter>
+
+      <parameter
+         name="HandlInst"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="3"
+         const="true"
+         fixTag="21">
+      </parameter>   
+   
+      <parameter
+         name="StrategyService"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="BLUEBOX"
+         const="true"
+         fixTag="7110">
+      </parameter>
+   
+      <parameter
+         name="EnableStart"
+         uiRep="Start Time :"
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7200"
+         ignoreProfile="true"
+         fixTag="-300">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="StartTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7200">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableStart" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="EnableEnd"
+         uiRep="End Time :  "
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7201"
+         ignoreProfile="true"
+         fixTag="-301">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="ExpireTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         initValue="16:00:00"
+         initValueMode="1"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7201">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableEnd" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="TimeInterval"
+         uiRep="Time Interval(secs) :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="90"
+         minValue="10"
+         maxValue="1800"
+         fixTag="7202">
+      </parameter>
+   
+      <parameter
+         name="MaxPercentageOfVolume"
+         uiRep="Max % Of Volume :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="100"
+         minValue="1"
+         maxValue="100"
+         fixTag="7208">
+      </parameter>
+   
+      <parameter
+         name="dummy_parameter"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         fixTag="-888">
+         <flow:stateRule visible="true">
+            <val:edit field="EnableDummy" value="1" operator="EQ"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <lay:strategyLayout>
+         <lay:strategyPanel orientation="HORIZONTAL">
+            <lay:strategyPanel title="Time Parameters" border="LoweredEtched" orientation="VERTICAL">
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableStart"/>
+                  <lay:control xsi:type="lay:Clock_t" label="Start Time" parameterRef="StartTime"/>
+               </lay:strategyPanel>
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableEnd"/>
+                  <lay:control xsi:type="lay:Clock_t" label="End Time" parameterRef="ExpireTime"/>
+               </lay:strategyPanel>
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:SingleSpinner_t" label="TimeInterval" parameterRef="TimeInterval"/>
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+               </lay:strategyPanel>
+            </lay:strategyPanel>
+            <lay:strategyPanel title="Strategy Parameters" border="LoweredEtched" orientation="VERTICAL" width="270">
+               <lay:control xsi:type="lay:SingleSpinner_t" label="MaxPercentageOfVolume" parameterRef="MaxPercentageOfVolume"/>
+               <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+               <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+            </lay:strategyPanel>
+         </lay:strategyPanel>
+      </lay:strategyLayout>
+   
+      <val:strategyEdit errorMessage="End Time should be after Start Time">
+         <val:edit logicOperator="OR">
+            <val:edit field="ExpireTime" operator="GT" field2="StartTime"></val:edit>
+            <val:edit logicOperator="OR">
+               <val:edit field="ExpireTime" operator="NX"/>
+               <val:edit field="StartTime" operator="NX"/>
+            </val:edit>
+         </val:edit>
+      </val:strategyEdit>
+      
+      <val:strategyEdit errorMessage="Only Buy,Sell and Short Sell are allowed">
+         <val:edit logicOperator="OR">
+            <val:edit field="Side" operator="EQ" value="1"></val:edit>
+            <val:edit field="Side" operator="EQ" value="2"></val:edit>
+            <val:edit field="Side" operator="EQ" value="5"></val:edit>
+         </val:edit>
+      </val:strategyEdit>  
+   
+   </strategy>
+   
+   <!-- POV -->
+   <strategy
+      name="POV"
+      uiRep="POV"
+      wireValue="POV"
+      version="1.7"
+      fixMsgType="D"
+      providerID="Okasan"
+      providerSubID="Portware">
+   
+      <parameter
+         name="TimeInForce"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="0"
+         const="true"
+         fixTag="59">
+      </parameter>
+      
+      <parameter
+         name="HandlInst"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="3"
+         const="true"
+         fixTag="21">
+      </parameter>         
+   
+      <parameter
+         name="StrategyService"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="BLUEBOX"
+         const="true"
+         fixTag="7110">
+      </parameter>
+   
+      <parameter
+         name="EnableStart"
+         uiRep="Start Time :"
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7200"
+         ignoreProfile="true"
+         fixTag="-300">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="StartTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7200">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableStart" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="EnableEnd"
+         uiRep="End Time :  "
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7201"
+         ignoreProfile="true"
+         fixTag="-301">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="ExpireTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         initValue="16:00:00"
+         initValueMode="1"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7201">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableEnd" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="TimeInterval"
+         uiRep="Time Interval(secs) :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="20"
+         minValue="10"
+         maxValue="1800"
+         fixTag="7202">
+      </parameter>
+   
+      <parameter
+         name="Participation"
+         uiRep="Participation :"
+         xsi:type="Float_t"
+         type="6"
+         use="optional"
+         initValue="10"
+         minValue="1"
+         maxValue="80"
+         increment="0.01"
+         precision="2"
+         fixTag="7220">
+      </parameter>
+   
+      <parameter
+         name="TradeWithinLimitPrice"
+         uiRep="Trade Within Limit Price :"
+         xsi:type="Boolean_t"
+         type="13"
+         use="optional"
+         initValue="false"
+         falseWireValue="N"
+         trueWireValue="Y"
+         fixTag="7223">
+      </parameter>
+   
+      <parameter
+         name="dummy_parameter"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         fixTag="-888">
+         <flow:stateRule visible="true">
+            <val:edit field="EnableDummy" value="1" operator="EQ"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <lay:strategyLayout>
+         <lay:strategyPanel orientation="HORIZONTAL">
+            <lay:strategyPanel title="Time Parameters" border="LoweredEtched" orientation="VERTICAL">
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableStart"/>
+                  <lay:control xsi:type="lay:Clock_t" label="Start Time" parameterRef="StartTime"/>
+               </lay:strategyPanel>
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableEnd"/>
+                  <lay:control xsi:type="lay:Clock_t" label="End Time" parameterRef="ExpireTime"/>
+               </lay:strategyPanel>
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:SingleSpinner_t" label="TimeInterval" parameterRef="TimeInterval"/>
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+               </lay:strategyPanel>
+            </lay:strategyPanel>
+            <lay:strategyPanel title="Strategy Parameters" border="LoweredEtched" orientation="VERTICAL" width="248">
+               <lay:control xsi:type="lay:DoubleSpinner_t" label="Participation" parameterRef="Participation"/>
+               <lay:control xsi:type="lay:CheckBox_t" label="TradeWithinLimitPrice" parameterRef="TradeWithinLimitPrice"/>
+               <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+            </lay:strategyPanel>
+         </lay:strategyPanel>
+      </lay:strategyLayout>
+   
+      <val:strategyEdit errorMessage="End Time should be after Start Time">
+         <val:edit logicOperator="OR">
+            <val:edit field="ExpireTime" operator="GT" field2="StartTime"></val:edit>
+            <val:edit logicOperator="OR">
+               <val:edit field="ExpireTime" operator="NX"/>
+               <val:edit field="StartTime" operator="NX"/>
+            </val:edit>
+         </val:edit>
+      </val:strategyEdit>
+      
+      <val:strategyEdit errorMessage="Only Buy,Sell and Short Sell are allowed">
+         <val:edit logicOperator="OR">
+            <val:edit field="Side" operator="EQ" value="1"></val:edit>
+            <val:edit field="Side" operator="EQ" value="2"></val:edit>
+            <val:edit field="Side" operator="EQ" value="5"></val:edit>
+         </val:edit>
+      </val:strategyEdit>  
+   
+   </strategy>
+   
+   <!-- Sniper -->
+   <strategy
+      name="Sniper"
+      uiRep="Sniper"
+      wireValue="Sniper"
+      version="1.7"
+      fixMsgType="D"
+      providerID="Okasan"
+      providerSubID="Portware">
+
+      <unSupportedOrderTypes>
+         <unSupportedOrderType value="1"/>
+      </unSupportedOrderTypes>
+
+      <parameter
+         name="TimeInForce"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="0"
+         const="true"
+         fixTag="59">
+      </parameter>
+      
+      <parameter
+         name="HandlInst"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="3"
+         const="true"
+         fixTag="21">
+      </parameter>         
+   
+      <parameter
+         name="StrategyService"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         initValue="BLUEBOX"
+         const="true"
+         fixTag="7110">
+      </parameter>
+   
+      <parameter
+         name="EnableStart"
+         uiRep="Start Time :"
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7200"
+         ignoreProfile="true"
+         fixTag="-300">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="StartTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7200">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableStart" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="EnableEnd"
+         uiRep="End Time :  "
+         xsi:type="Char_t"
+         type="12"
+         use="optional"
+         disableOnRplIfTimeExpired="7201"
+         ignoreProfile="true"
+         fixTag="-301">
+         <enumPair uiRep="Disabled" wireValue="0"></enumPair>
+         <enumPair uiRep="Set" wireValue="1"></enumPair>
+      </parameter>
+   
+      <parameter
+         name="ExpireTime"
+         uiRep=""
+         xsi:type="UTCTimeStamp_t"
+         type="21"
+         use="optional"
+         initValue="16:00:00"
+         initValueMode="1"
+         uiTimeFormat="HH:mm:ss"
+         ignoreProfile="true"
+         definedByFIX="false"
+         fixTag="7201">
+         <flow:stateRule enabled="true">
+            <val:edit field="EnableEnd" operator="EQ" value="1"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <parameter
+         name="MaxSlicePercentage"
+         uiRep="Max Slice Percentage :"
+         xsi:type="Int_t"
+         type="1"
+         use="optional"
+         initValue="100"
+         minValue="1"
+         maxValue="100"
+         fixTag="7202">
+      </parameter>
+   
+      <parameter
+         name="dummy_parameter"
+         uiRep=""
+         xsi:type="String_t"
+         type="14"
+         use="optional"
+         fixTag="-888">
+         <flow:stateRule visible="true">
+            <val:edit field="EnableDummy" value="1" operator="EQ"></val:edit>
+         </flow:stateRule>
+      </parameter>
+   
+      <lay:strategyLayout>
+         <lay:strategyPanel orientation="HORIZONTAL">
+            <lay:strategyPanel title="Time Parameters" border="LoweredEtched" orientation="VERTICAL">
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableStart"/>
+                  <lay:control xsi:type="lay:Clock_t" label="Start Time" parameterRef="StartTime"/>
+               </lay:strategyPanel>
+               <lay:strategyPanel orientation="HORIZONTAL">
+                  <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="EnableEnd"/>
+                  <lay:control xsi:type="lay:Clock_t" label="End Time" parameterRef="ExpireTime"/>
+               </lay:strategyPanel>
+            </lay:strategyPanel>
+            <lay:strategyPanel title="Strategy Parameters" border="LoweredEtched" orientation="VERTICAL" width="248">
+               <lay:control xsi:type="lay:SingleSpinner_t" label="MaxSlicePercentage" parameterRef="MaxSlicePercentage"/>
+               <lay:control xsi:type="lay:DropDownList_t" label="" parameterRef="dummy_parameter"/>
+            </lay:strategyPanel>
+         </lay:strategyPanel>
+      </lay:strategyLayout>
+   
+      <val:strategyEdit errorMessage="End Time should be after Start Time">
+         <val:edit logicOperator="OR">
+            <val:edit field="ExpireTime" operator="GT" field2="StartTime"></val:edit>
+            <val:edit logicOperator="OR">
+               <val:edit field="ExpireTime" operator="NX"/>
+               <val:edit field="StartTime" operator="NX"/>
+            </val:edit>
+         </val:edit>
+      </val:strategyEdit>
+      
+      <val:strategyEdit errorMessage="Only Buy,Sell are allowed">
+         <val:edit logicOperator="OR">
+            <val:edit field="Side" operator="EQ" value="1"></val:edit>
+            <val:edit field="Side" operator="EQ" value="2"></val:edit>
+         </val:edit>
+      </val:strategyEdit>  
+   
+   </strategy>
+	
+	</region>	
+	
+</strategies>		
